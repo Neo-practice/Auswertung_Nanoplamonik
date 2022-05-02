@@ -29,6 +29,14 @@ wavelength, ref_0 = np.hsplit(referenz_0, 2)
 hybrid_0_20nm = np.loadtxt('spectrometer_0_20nm_hybrid_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
 wavelength, intensity = np.hsplit(hybrid_0_20nm, 2)
 
+einzel_0_100nm = np.loadtxt('spectrometer_0_100nm_einzel_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
+wavelength, intensity = np.hsplit(einzel_0_100nm, 2)
+
+einzel_90_100nm = np.loadtxt('spectrometer_90_100nm_einzel_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
+wavelength, intensity = np.hsplit(einzel_90_100nm, 2)
+
+
+
 # Calculate absorption abs
 abs = 1-intensity/ref_0
 
@@ -49,6 +57,8 @@ parameters, covariance_matrix = curve_fit(func1, wavelength, abs, p0=[650, 50, 0
 mu, sig, fac, d = parameters
 plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 2")
 
+# calculate fwhm
+fwhm = 2 * np.sqrt(2*np.log(2)) * sig
 
 
 plt.legend()
