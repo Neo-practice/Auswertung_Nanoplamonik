@@ -18,7 +18,7 @@ def scale(bild):
 
 
 # load the image, convert it to grayscale, and blur it
-image = cv2.imread("test_silber_df_without_pol.png")
+image = cv2.imread("../test_silber_df_without_pol.png")
 
 
 
