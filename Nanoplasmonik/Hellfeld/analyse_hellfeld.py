@@ -47,9 +47,11 @@ plt.plot(wavelength, gaussian(wavelength, mu, sig, fac), label="Fit Peak 1")
 # fit mit d (zus. Verschiebung in y Richtung)
 parameters, covariance_matrix = curve_fit(func1, wavelength, abs, p0=[650, 50, 0.6, 0.1])
 mu, sig, fac, d = parameters
-plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 1")
+plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 2")
 
 
+
+plt.legend()
 plt.show()
 
 
