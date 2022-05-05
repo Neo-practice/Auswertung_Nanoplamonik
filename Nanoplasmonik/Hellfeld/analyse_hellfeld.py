@@ -87,7 +87,7 @@ for i in np.arange(wavelength.size):
 
 groesse = ['100', '70']
 
-for i in np.arange(1):#len(groesse)):
+for i in np.arange(len(groesse)):
     plt.figure(i, dpi= 100)#figsize= [15,10])
 
 
