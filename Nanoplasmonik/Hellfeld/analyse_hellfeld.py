@@ -13,14 +13,14 @@ from scipy.special import voigt_profile as voigt
 def func1(x, mu, sig, fac, d):
     return fac * np.exp(-np.power(x - mu, 2.) / (2 * np.power(sig, 2.))) +d
 
-def lorentz( x, w0, gamma):
-    return 1/( (x**2 - w0**2 )**2 + gamma**2*w0**2)
+def lorentz( x, w0, gamma, d):
+    return 1/( (x**2 - w0**2 )**2 + gamma**2*w0**2)+d
 
 def gaussian(x, mu, sig, fac):
     return fac * np.exp(-np.power(x - mu, 2.) / (2 * np.power(sig, 2.)))
 
 def faltung( x, w0, gamma, mu, sig, fac ):
-    return lorentz(x, w0, gamma)*gaussian(x, mu, sig, fac)
+    return lorentz(x, w0, gamma, 0.1)*func1(x, mu, sig, fac, 0.1)
 
 
 
@@ -100,7 +100,7 @@ for i in np.arange(1):#len(groesse)):
     abs_90 = 1-intensity_90/ref_90
 
     plt.plot(w, abs_0, label='0 Grad Polarisation')
-    #plt.plot(w, abs_90, label='90 Grad Polariation')
+    plt.plot(w, abs_90, label='90 Grad Polariation')
     plt.xlabel('omega *10^(15)')
     plt.title('Extinktionsspektrum für '+groesse[i]+' nm Nanopartikel')
 
@@ -126,11 +126,15 @@ for i in np.arange(1):#len(groesse)):
               label="FWHM = "+str(round(fwhm[0]*100)/100)+" *10^(15)")
     plt.legend(loc='upper right')
 
-    #parameters, covariance_matrix = curve_fit(faltung, w, abs2, p0=[3.0, 0.4, 3.3, 0.5, 0.3])
-    #w0, gamma, mu, sig, fac = parameters
-    #fwhm[1] = np.sqrt(w0 ** 2 + gamma * w0) - np.sqrt(w0 ** 2 - gamma * w0)
-    #plt.plot(w, faltung(w, w0, gamma, mu, sig, fac),
-    #         label="Fit 0 Grad, FWHM = " + str(round(fwhm[1] * 100) / 100) + " *10^(15)")
+    parameters, covariance_matrix = curve_fit(faltung, w, abs_90, p0=[2.65, 0.3, 4.2, 0.8, 2.])
+    w0, gamma, mu, sig, fac = parameters
+    func = faltung(w, w0, gamma, mu, sig, fac)
+    fwhm = FWHM(w,func)
+    plt.plot(w, func,
+             label="Lorentz*Gauss-Fit 90 Grad")
+    plt.plot(w[[int(fwhm[1]), int(fwhm[2])]], func[[int(fwhm[1]), int(fwhm[2])]], lw=1, ls='--',
+             label="FWHM = " + str(round(fwhm[0] * 100) / 100) + " *10^(15)")
+    plt.legend(loc='upper right')
 
 
     #### Rest der Überlegungen
