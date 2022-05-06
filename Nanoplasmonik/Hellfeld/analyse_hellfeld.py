@@ -123,10 +123,6 @@ for i in np.arange(len(groesse)):
     abs_0 = np.squeeze(abs_0)
     abs_90 = np.squeeze(abs_90)
 
-    start = round(w.size/2)
-    end = w.size
-    range_help = [*range(start,end,1) ]
-
     # lorentz_parameter = np.array([2.8, 0.5, 0.1], dtype=float)
     # gauss_parameter = np.array([3.0, 0.1, 0.2, 0.1], dtype=float)
 
@@ -172,79 +168,6 @@ for i in np.arange(len(groesse)):
     # plt.plot(w, gaussian(w, mu, sig, fac),
     #             label="Gauss-Fit 0 Grad, FWHM = " + str(round(fwhm[1] * 100) / 100) + " *10^(15)")
 
-
-
-
-## Load Hybridisierte
-
-
-
-option_größe = ['20' , '30' , '40' , '50' , '60']
-
-
-hybrid_0_20nm = np.loadtxt('spectrometer_0_20nm_hybrid_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
-wavelength, intensity = np.hsplit(hybrid_0_20nm, 2)
-
-
-
-
-# nehme einfach mal für intensität beide Polarisationen
-intensity = intensity_0+intensity_90
-
-
-
-
-
-# Calculate absorption abs
-abs = 1-intensity/ref_0
-
-
-# Plot data
-#plt.plot(wavelength, abs, label='0 Grad Polarisation')
-
-#plt.plot(wavelength, abs1, label='0 Grad Polarisation')
-#plt.plot(wavelength, abs2, label='90 Grad Polariation')
-#plt.xlabel('Wellenlänge (nm)')
-
-#plt.plot(energyscale, abs1, label='0 Grad Polarisation')
-#plt.plot(energyscale, abs2, label='90 Grad Polariation')
-#plt.xlabel('Energy (eV)')
-
-
-
-# Muss noch richtig formatiert werden (warum auch immer, sollte eig. schon richtig sein)
-wavelength = np.squeeze(wavelength)
-
-abs = np.squeeze(abs)
-
-
-# Fit gaussian
-#parameters, covariance_matrix = curve_fit(gaussian, wavelength, abs, p0=[650, 50, 0.6])
-#mu, sig, fac = parameters
-#plt.plot(wavelength, gaussian(wavelength, mu, sig, fac), label="Fit Peak 1")
-
-# fit mit d (zus. Verschiebung in y Richtung)
-parameters, covariance_matrix = curve_fit(func1, wavelength, abs_0, p0=[650, 50, 0.6, 0.1])
-mu, sig, fac, d = parameters
-#plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 2")
-
-
-
-
-
-#range_help = [*range(1300,wavelength.size,1) ]
-#print(range_help)
-#parameters, covariance_matrix = curve_fit(func1, wavelength[range_help], abs2[range_help], p0=[650, 50, 0.6, 0.1])
-#mu, sig, fac, d = parameters
-#plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 2")
-
-
-
-# calculate fwhm
-#fwhm = 2 * np.sqrt(2*np.log(2)) * sig
-#print(fwhm)
-
-#plt.legend()
 plt.show()
 
 
