@@ -1,9 +1,7 @@
 import matplotlib.pyplot
 import numpy as np
-from numpy.fft import fft, ifft
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from scipy.special import voigt_profile as voigt
 
 # werte = np.loadtxt("dips4.txt")
 # x, y, b, nichts, c, d = np.hsplit(werte, 6)
@@ -19,8 +17,8 @@ def lorentz( x, w0, gamma, d):
 def gaussian(x, mu, sig, fac):
     return fac * np.exp(-np.power(x - mu, 2.) / (2 * np.power(sig, 2.)))
 
-def faltung( x, w0, gamma, mu, sig, fac ):
-    return lorentz(x, w0, gamma, 0.1)*func1(x, mu, sig, fac, 0.1)
+def faltung( x, w0, gamma, mu, sig, fac , offset):
+    return lorentz(x, w0, gamma, offset)*func1(x, mu, sig, fac, offset)
 
 
 
@@ -133,14 +131,14 @@ for i in np.arange(len(groesse)):
     # gauss_parameter = np.array([3.0, 0.1, 0.2, 0.1], dtype=float)
 
     ## Lorentz*Gauss Fit
-    parameters, covariance_matrix = curve_fit(faltung, w, abs_0, p0=[ 3.0, 0.4, 3.3, 0.5, 0.3 ])
+    parameters, covariance_matrix = curve_fit(faltung, w, abs_0, p0=[ 3.0, 0.4, 3.3, 0.5, 0.3, 0.1 ])
     std_parameters = np.sqrt(np.diag(covariance_matrix))
     # Gibt laut Python-Documentation die Standardabweichung der Parameter an
     # Guter Fehler für w ist vlt sqrt( sdt_w0^2 +std_mu^2 )
     #delta_w = np.sqrt( std_parameters[0]**2. + std_parameters[2]**2. )
     #print('Aus Parameter: ' , delta_w)
-    w0, gamma, mu, sig, fac = parameters
-    func = faltung(w, w0, gamma, mu, sig, fac)
+    w0, gamma, mu, sig, fac, offset = parameters
+    func = faltung(w, w0, gamma, mu, sig, fac, offset)
     fwhm = FWHM(w,func, abs_0)
     plt.plot(w, func,
              label="Lorentz*Gauss-Fit 0 Grad")
@@ -148,9 +146,9 @@ for i in np.arange(len(groesse)):
               label="FWHM = "+str(round(fwhm[0]*1000)/1000)+"± "+str(round(fwhm[1]*1000)/1000)+" *10^(15)")
     plt.legend(loc='upper right')
 
-    parameters, covariance_matrix = curve_fit(faltung, w, abs_90, p0=[2.65, 0.3, 4.2, 0.8, 2.])
-    w0, gamma, mu, sig, fac = parameters
-    func = faltung(w, w0, gamma, mu, sig, fac)
+    parameters, covariance_matrix = curve_fit(faltung, w, abs_90, p0=[2.65, 0.3, 4.2, 0.8, 2., 0.1])
+    w0, gamma, mu, sig, fac , offset= parameters
+    func = faltung(w, w0, gamma, mu, sig, fac, offset)
     fwhm = FWHM(w,func, abs_90)
     plt.plot(w, func,
              label="Lorentz*Gauss-Fit 90 Grad")
