@@ -117,7 +117,7 @@ shift = 4
 plt.figure(1, dpi=130, figsize=(9.1,11.7))
 
 fwhm = np.zeros((4,len(option_abstand)))
-
+tau = np.zeros((len(option_abstand),4))
 #for i in np.arange(len(option_abstand)-shift-1,len(option_abstand)-shift):
 for i in np.arange(len(option_abstand)):
       # figsize= [15,10])
@@ -139,7 +139,11 @@ for i in np.arange(len(option_abstand)):
     abs_90 = np.squeeze(abs_90)
 
     ## Voigtsummen Fit                                geht auch:  2.7, 0.3, 2.3, 0.5, 0.3,   3.0, 0.4, 3.3, 0.2, 0.2,   0.2
-    parameters, covariance_matrix = curve_fit(falt_sum, w, abs_0[:,i], p0=[2.7, 0.4, 2.8, 0.2, 0.4,   3.0, 0.3, 3.2, 0.1, 0.1,   0.2])
+    #if i == 1:
+    #    param = [2.7, 0.3, 2.8, 0.2, 0.4,   3.0, 0.3, 3.2, 0.1, 0.1,   0.2]
+    #else:
+    param = [2.7, 0.4, 2.8, 0.2, 0.4,   3.0, 0.3, 3.2, 0.1, 0.1,   0.2]
+    parameters, covariance_matrix = curve_fit(falt_sum, w, abs_0[:,i], p0=param)
     w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset = parameters
     #print(parameters)
     func = falt_sum(w, w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset)
@@ -149,6 +153,17 @@ for i in np.arange(len(option_abstand)):
     fwhm_c1 = FWHM(w, func1, abs_0[:,i])
     fwhm_c2 = FWHM(w, func2, abs_0[:,i])
     fwhm[:,i] = np.transpose(np.array([fwhm_c1[0], fwhm_c1[1], fwhm_c2[0], fwhm_c1[1]]))
+    #print('Abstand \SI{'+ option_abstand[i]+ '}{\ nano\metre} & ' + str( np.round(fwhm_c1[0]*1000000)/1000000 )+
+    #      ' & '+str( np.round(fwhm_c1[1]*1000000)/1000000 )+ ' & '
+    #      + str( np.round(fwhm_c2[0]*1000000)/1000000 )+ '  & '+str( np.round(fwhm_c2[1]*1000000)/1000000  ) + ' \ \ ')
+    tau[i, 0] = 1 / (fwhm_c1[0] * 10 ** (15))
+    tau[i, 2] = 1 / (fwhm_c2[0] * 10 ** (15))
+    tau[i, 1] = fwhm_c1[1] * 10 ** (15) / (fwhm_c1[0] * 10 ** (15)) ** 2
+    tau[i, 3] = fwhm_c2[1] * 10 ** (15) / (fwhm_c2[0] * 10 ** (15)) ** 2
+    #print('Abstand \SI{' + option_abstand[i] + '}{\ nano\metre} & ' + str(tau[0,0]*10**(15))
+    #      +' & ' + str(tau[0,1]*10**(15)) + ' & '
+    #      + str(tau[1,0] *10**(15))
+    #      + '  & ' + str(tau[1,1] *10**(15)) + ' \ \ ')
     plt.plot(w, func1, ls='--', color='green', label='Einzelprofile')
     plt.plot(w, func2, ls='--', color='green')
     plt.axis([w[-1], w[0], 0, 1])
@@ -234,7 +249,12 @@ plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
 plt.axis([w[-1], w[0], 0, 1])
 plt.yticks([])
 
+#print(tau)
+
+
+
 plt.savefig('alle_hybridplasmonen')
+
 plt.show()
 
 

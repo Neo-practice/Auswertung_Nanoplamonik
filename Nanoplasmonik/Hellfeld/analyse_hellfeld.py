@@ -102,6 +102,9 @@ for i in np.arange(wavelength.size):
 
 groesse = ['100', '70']
 
+fwhm_val = np.zeros((len(groesse), 2), dtype = float)
+
+
 fig = plt.figure(1, dpi=130, figsize=(10,6.666))
 for i in np.arange(len(groesse)):
 
@@ -136,6 +139,8 @@ for i in np.arange(len(groesse)):
     w0, gamma, mu, sig, fac, offset = parameters
     func = faltung(w, w0, gamma, mu, sig, fac, offset)
     fwhm = FWHM(w,func, abs_0)
+    fwhm_val[0,i] = fwhm[0]
+    fwhm_val[1, i] = fwhm[1]
     plt.plot(w, func, color='green',
              label="Lorentz-Gauss-Fit 0°")
     plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  lw=1 ,ls='--',
@@ -173,6 +178,23 @@ for i in np.arange(len(groesse)):
     # fwhm[1] = f_G(sig)
     # plt.plot(w, gaussian(w, mu, sig, fac),
     #             label="Gauss-Fit 0 Grad, FWHM = " + str(round(fwhm[1] * 100) / 100) + " *10^(15)")
+
+#print(fwhm_val)
+
+tau = np.zeros((2,2))
+
+tau[0,0] = 1/(fwhm_val[0,0]*10**(15))
+tau[1,0] = 1/(fwhm_val[0,1]*10**(15))
+tau[0,1] = fwhm_val[1,0]*10**(15)/(fwhm_val[0,0]*10**(15))**2
+tau[1,1] = fwhm_val[1,1]*10**(15)/(fwhm_val[0,1]*10**(15))**2
+
+
+print(tau)
+
+np.savetxt("einzel_lebenszeiten.txt", tau)
+
+
+
 
 plt.savefig('Einzelpartikelplamonen')
 plt.show()
