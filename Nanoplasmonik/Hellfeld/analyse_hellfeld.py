@@ -102,9 +102,8 @@ for i in np.arange(wavelength.size):
 
 groesse = ['100', '70']
 
+fig = plt.figure(1, dpi=130, figsize=(10,6.666))
 for i in np.arange(len(groesse)):
-    plt.figure(i, dpi= 100)#figsize= [15,10])
-
 
     einzel_0 = np.loadtxt('spectrometer_0_'+groesse[i]+'nm_einzel_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
     wavelength, intensity_0 = np.hsplit(einzel_0, 2)
@@ -114,9 +113,10 @@ for i in np.arange(len(groesse)):
     abs_0 = 1-intensity_0/ref_0
     abs_90 = 1-intensity_90/ref_90
 
-    plt.plot(w, abs_0, label='0 Grad Polarisation')
-    plt.plot(w, abs_90, label='90 Grad Polariation')
-    plt.xlabel('omega *10^(15)')
+    plt.subplot(1, 2, i+1)
+    plt.plot(w, abs_0, color='blue', label='0° Polarisation')
+    plt.axis([w[-1], w[0], 0, 1])
+    plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
     plt.title('Extinktionsspektrum für '+groesse[i]+' nm Nanopartikel')
 
     w = np.squeeze(w)
@@ -136,22 +136,28 @@ for i in np.arange(len(groesse)):
     w0, gamma, mu, sig, fac, offset = parameters
     func = faltung(w, w0, gamma, mu, sig, fac, offset)
     fwhm = FWHM(w,func, abs_0)
-    plt.plot(w, func,
-             label="Lorentz*Gauss-Fit 0 Grad")
+    plt.plot(w, func, color='green',
+             label="Lorentz-Gauss-Fit 0°")
     plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  lw=1 ,ls='--',
-              label="FWHM = "+str(round(fwhm[0]*1000)/1000)+"± "+str(round(fwhm[1]*1000)/1000)+" *10^(15)")
+              color='green',
+              label="$\Delta\omega_{0°}$ = "+str(round(fwhm[0]*1000)/1000)+"$\pm$ "+str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$")
     plt.legend(loc='upper right')
 
+    plt.plot(w, abs_90, color='red', label='90° Polariation')
     parameters, covariance_matrix = curve_fit(faltung, w, abs_90, p0=[2.65, 0.3, 4.2, 0.8, 2., 0.1])
     w0, gamma, mu, sig, fac , offset= parameters
     func = faltung(w, w0, gamma, mu, sig, fac, offset)
     fwhm = FWHM(w,func, abs_90)
-    plt.plot(w, func,
-             label="Lorentz*Gauss-Fit 90 Grad")
+    plt.plot(w, func, color='orange',
+             label="Lorentz-Gauss-Fit 90°")
     plt.plot(w[[int(fwhm[2]), int(fwhm[3])]], func[[int(fwhm[2]), int(fwhm[3])]], lw=1, ls='--',
-             label="FWHM = " + str(round(fwhm[0] * 1000) / 1000)+"± "+str(round(fwhm[1]*1000)/1000)+" *10^(15)")
+             color='orange',
+             label="$\Delta\omega_{90°}$ = " + str(round(fwhm[0] * 1000) / 1000)+"$\pm$ "+str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$")
     plt.legend(loc='upper right')
-
+    if i == 0:
+        plt.ylabel('Extinktionsspektrum')
+    else:
+        plt.yticks([])
 
     #### Rest der Überlegungen
     ## Lorentz Fit
@@ -168,7 +174,9 @@ for i in np.arange(len(groesse)):
     # plt.plot(w, gaussian(w, mu, sig, fac),
     #             label="Gauss-Fit 0 Grad, FWHM = " + str(round(fwhm[1] * 100) / 100) + " *10^(15)")
 
+plt.savefig('Einzelpartikelplamonen')
 plt.show()
+
 
 
 

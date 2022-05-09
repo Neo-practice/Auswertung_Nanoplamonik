@@ -18,13 +18,20 @@ def gaussian(x, mu, sig, fac):
     return fac * np.exp(-np.power(x - mu, 2.) / (2 * np.power(sig, 2.)))
 
 def faltung( x, w0, gamma, mu, sig, fac , offset):
-    return lorentz(x, w0, gamma, offset)*func1(x, mu, sig, fac, offset)
+    return lorentz(x, w0, gamma, offset)*gaussian1(x, mu, sig, fac, offset)
+
+def falt_sum(x, w0_1, gamma1, mu1, sig1, fac1 ,w0_2, gamma2, mu2, sig2, fac2, offset):
+    return faltung(x, w0_1, gamma1, mu1, sig1, fac1, offset)+faltung(x,w0_2, gamma2, mu2, sig2, fac2, offset )
 
 def gauss_sum2( x, mu1, sig1, fac1 , mu2, sig2, fac2, offset):
-    return gaussian(x, mu1, sig1, fac1)+gaussian(x, mu2, sig2, fac2)+0.1
+    return gaussian(x, mu1, sig1, fac1)+gaussian(x, mu2, sig2, fac2)+offset
 
-
-
+def integrate(x, y):
+    sum = np.zeros(len(x)-1)
+    sum[0] = np.abs(x[1] - x[0]) * ((y[1] + y[0]) / 2)
+    for i in np.arange(len(x)-2,):
+        sum[i+1] = sum[i] + np.abs(x[i+1]-x[i+2])*((y[i+1]+y[i+2])/2)
+    return sum
 def f_L(w0, gamma):
     return np.sqrt( w0**2+gamma*w0 ) - np.sqrt( w0**2-gamma*w0 )
 def f_G(sigma):
@@ -103,47 +110,92 @@ for i in np.arange(wavelength.size):
 ## Load Hybridisierte
 
 option_abstand = ['20' , '30' , '40' , '50' , '60']
+#print(len(option_abstand))
+abs_0 = np.zeros((len(w),int(len(option_abstand))))
+abs_90 = np.zeros((len(w),int(len(option_abstand))))
+shift = 4
+plt.figure(1, dpi=130, figsize=(9.1,11.7))
 
-for i in np.arange(1):#len(option_groesse)):
-    plt.figure(i, dpi=100)  # figsize= [15,10])
+fwhm = np.zeros((4,len(option_abstand)))
+
+#for i in np.arange(len(option_abstand)-shift-1,len(option_abstand)-shift):
+for i in np.arange(len(option_abstand)):
+      # figsize= [15,10])
 
     hybrid_0 = np.loadtxt('spectrometer_0_'+option_abstand[i]+'nm_hybrid_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
     wavelength, intensity_0 = np.hsplit(hybrid_0, 2)
     hybrid_90 = np.loadtxt('spectrometer_90_'+option_abstand[i]+'nm_hybrid_at_650.00nm_cut_at_1184.50Y_01.dat', skiprows = 6)
     wavelength, intensity_90 = np.hsplit(hybrid_90, 2)
 
-    abs_0 = 1 - intensity_0 / ref_0
-    abs_90 = 1 - intensity_90 / ref_90
+    abs_0[:,i] = np.transpose(1 - intensity_0 / ref_0)
+    abs_90[:,i] = np.transpose(1 - intensity_90 / ref_90)
 
-    plt.plot(w, abs_0, label='0 Grad Polarisation')
-    #plt.plot(w, abs_90, label='90 Grad Polariation')
-    plt.xlabel('omega *10^(15)')
-    plt.title('Extinktionsspektrum bei ' + option_abstand[i] + ' nm Abstand der Hybrid-Nanopartikel')
+    plt.subplot(3,2,i+1)
+    p = plt.plot(w, abs_0[:,i], color='blue', label='Signal bei 0° Polarisation')
+    plt.title( option_abstand[i] + ' nm Abstand')#'Extinktionsspektrum bei ' + 'der Hybrid-Nanopartikel'
 
     w = np.squeeze(w)
     abs_0 = np.squeeze(abs_0)
     abs_90 = np.squeeze(abs_90)
 
+    ## Voigtsummen Fit                                geht auch:  2.7, 0.3, 2.3, 0.5, 0.3,   3.0, 0.4, 3.3, 0.2, 0.2,   0.2
+    parameters, covariance_matrix = curve_fit(falt_sum, w, abs_0[:,i], p0=[2.7, 0.4, 2.8, 0.2, 0.4,   3.0, 0.3, 3.2, 0.1, 0.1,   0.2])
+    w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset = parameters
+    #print(parameters)
+    func = falt_sum(w, w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset)
+    plt.plot(w, func, color='green', label="Voigt-Summen-Fit")
+    func1 = faltung(w, w0_1, gamma1, mu1, sig1, fac1, offset)
+    func2 = faltung(w, w0_2, gamma2, mu2, sig2, fac2, offset)
+    fwhm_c1 = FWHM(w, func1, abs_0[:,i])
+    fwhm_c2 = FWHM(w, func2, abs_0[:,i])
+    fwhm[:,i] = np.transpose(np.array([fwhm_c1[0], fwhm_c1[1], fwhm_c2[0], fwhm_c1[1]]))
+    plt.plot(w, func1, ls='--', color='green', label='Einzelprofile')
+    plt.plot(w, func2, ls='--', color='green')
+    plt.axis([w[-1], w[0], 0, 1])
+
+    if i == 4:
+        plt.legend(loc='best', bbox_to_anchor=(1.92, 1.))
+    if i in [3, 4]:
+        plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
+    if i in [0,2,4]:
+        plt.ylabel('Extinktionsspektrum')
+    if i in [1,3]:
+        plt.yticks([])
+
+    #[2.3, 0.4, 2.7, 0.5, 0.3, 2.8, 0.4, 3.3, 0.5, 0.3, 0.1]
+    #parameters, covariance_matrix = curve_fit(falt_sum, w, abs_90, p0=[2.2, 0.2, 2.6, 0.17, 0.6, 2.8, 0.4, 4.5, 0.6, 4.3, 0.])
+    #std_parameters = np.sqrt(np.diag(covariance_matrix))
+    #w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset = parameters
+    #print(parameters)
+    #func = falt_sum(w, w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset)
+    #plt.plot(w, func, color='red', label="Lorentz*Gauss-Fit 0 Grad")
+    #plt.plot(w, faltung(w,w0_1, gamma1, mu1, sig1, fac1, offset), ls='--', color='red', label='Einzelprofile 90 Grad')
+    #plt.plot(w, faltung(w, w0_2, gamma2, mu2, sig2, fac2, offset), ls='--', color='red')
+
     ## Gausssummen Fit
+    #plt.figure(2)
     #plt.plot(w, gaussian1(w, 2.75, 0.1, 0.5, 0.05)+gaussian1(w, 3.0, 0.2, 0.3, 0.05))
     #plt.plot(w, gaussian1(w, 3.0, 0.2, 0.4, 0.05))
-    parameters, covariance_matrix = curve_fit(gauss_sum2, w, abs_0, p0=[2.75, 0.1, 0.5, 3.0, 0.2, 0.3, 0.05])
+    #integral = integrate(w,abs_0)
+    #plt.plot(w[0:len(w)-1], integral )
+
+    #parameters, covariance_matrix = curve_fit(gauss_sum2, w, abs_0, p0=[2.75, 0.1, 0.5, 3.0, 0.2, 0.3, 0.05])
     #std_parameters = np.sqrt(np.diag(covariance_matrix))
     # Gibt laut Python-Documentation die Standardabweichung der Parameter an
     # Guter Fehler für w ist vlt sqrt( sdt_w0^2 +std_mu^2 )
     # delta_w = np.sqrt( std_parameters[0]**2. + std_parameters[2]**2. )
     # print('Aus Parameter: ' , delta_w)
-    mus1, sig1, fac1, mus2, sig2, fac2, offset = parameters
-    func = gauss_sum2(w, mus1, sig1, fac1, mus2, sig2, fac2, offset)
+    #mus1, sig1, fac1, mus2, sig2, fac2, offset = parameters
+    #func = gauss_sum2(w, mus1, sig1, fac1, mus2, sig2, fac2, offset)
     #fwhm = FWHM(w, func, abs_0)
-    plt.plot(w, func,
-             label="Lorentz*Gauss-Fit 0 Grad")
+    #plt.plot(w, func,
+    #         label="Lorentz*Gauss-Fit 0 Grad")
     #plt.plot(w[[int(fwhm[2]), int(fwhm[3])]], func[[int(fwhm[2]), int(fwhm[3])]], lw=1, ls='--',
     #         label="FWHM = " + str(round(fwhm[0] * 1000) / 1000) + "± " + str(
     #             round(fwhm[1] * 1000) / 1000) + " *10^(15)")
-    plt.plot(w, gaussian1(w, mus1, sig1, fac1 , offset ))
-    plt.plot(w, gaussian1(w, mus2, sig2, fac2, offset ))
-    plt.legend(loc='upper right')
+    #plt.plot(w, gaussian1(w, mus1, sig1, fac1 , offset ))
+    #plt.plot(w, gaussian1(w, mus2, sig2, fac2, offset ))
+    #plt.legend(loc='upper right')
 
     #parameters, covariance_matrix = curve_fit(gauss_sum2, w, abs_90, p0=[2.6, 0.4, 0.5, 3.0, 0.4, 0.5, 0.1])
     #mus1, sig1, fac1, mus2, sig2, fac2, offset = parameters
@@ -156,60 +208,33 @@ for i in np.arange(1):#len(option_groesse)):
     #             round(fwhm[1] * 1000) / 1000) + " *10^(15)")
     #plt.plot(gaussian1(w, mus1, sig1, fac1, offset ))
     #plt.plot(gaussian1(w, mus2, sig2, fac2, offset))
-    plt.legend(loc='upper right')
 
-
-
-
-
-# Plot data
-#plt.plot(wavelength, abs, label='0 Grad Polarisation')
-
-#plt.plot(wavelength, abs1, label='0 Grad Polarisation')
-#plt.plot(wavelength, abs2, label='90 Grad Polariation')
-#plt.xlabel('Wellenlänge (nm)')
-
-#plt.plot(energyscale, abs1, label='0 Grad Polarisation')
-#plt.plot(energyscale, abs2, label='90 Grad Polariation')
-#plt.xlabel('Energy (eV)')
-
-
-
-# Muss noch richtig formatiert werden (warum auch immer, sollte eig. schon richtig sein)
-wavelength = np.squeeze(wavelength)
-
-abs = np.squeeze(abs)
-
-
-# Fit gaussian
-#parameters, covariance_matrix = curve_fit(gaussian, wavelength, abs, p0=[650, 50, 0.6])
-#mu, sig, fac = parameters
-#plt.plot(wavelength, gaussian(wavelength, mu, sig, fac), label="Fit Peak 1")
-
-# fit mit d (zus. Verschiebung in y Richtung)
-#parameters, covariance_matrix = curve_fit(func1, wavelength, abs_0, p0=[650, 50, 0.6, 0.1])
-#mu, sig, fac, d = parameters
-#plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 2")
-
-
-
-
-
-#range_help = [*range(1300,wavelength.size,1) ]
-#print(range_help)
-#parameters, covariance_matrix = curve_fit(func1, wavelength[range_help], abs2[range_help], p0=[650, 50, 0.6, 0.1])
-#mu, sig, fac, d = parameters
-#plt.plot(wavelength, func1(wavelength, mu, sig, fac, d), label="Fit Peak 2")
-
-
-
-# calculate fwhm
-#fwhm = 2 * np.sqrt(2*np.log(2)) * sig
 #print(fwhm)
+plt.savefig('Hybridplasmonen_0_Grad')
 
-#plt.legend()
+
+
+plt.figure(2, dpi=130, figsize=(10,6.666))
+
+plt.subplot(1,2,1)
+for j in np.arange(len(abs_0[1,:])-1,-1,-1):
+    plt.plot(w, abs_0[:,j] , label = ''+str(option_abstand[j])+' nm Abstand', color=(0.1+0.1*j, 0.2+0.1*j, 0.5+0.1*j))#(0.1, 0.2, 0.5) blau
+#plt.legend(loc='upper right')
+plt.title('Signale bei 0° Polarisation')
+plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
+plt.axis([w[-1], w[0], 0, 1])
+plt.ylabel('Extinktionsspektrum')
+
+plt.subplot(1,2,2)
+for j in np.arange(len(abs_90[1,:])-1,-1,-1):
+    plt.plot(w, abs_90[:,j] , label = ''+str(option_abstand[j])+' nm Abstand', color=(0.1+0.1*j, 0.2+0.1*j, 0.5+0.1*j))#(0.1, 0.2, 0.5) blau
+plt.legend(loc='upper right')
+plt.title('Signale bei 90° Polarisation')
+plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
+plt.axis([w[-1], w[0], 0, 1])
+plt.yticks([])
+
+plt.savefig('alle_hybridplasmonen')
 plt.show()
-
-
 
 
