@@ -23,6 +23,9 @@ def faltung( x, w0, gamma, mu, sig, fac , offset):
 def falt_sum(x, w0_1, gamma1, mu1, sig1, fac1 ,w0_2, gamma2, mu2, sig2, fac2, offset):
     return faltung(x, w0_1, gamma1, mu1, sig1, fac1, offset)+faltung(x,w0_2, gamma2, mu2, sig2, fac2, offset )
 
+def falt_sum2(x, w0_1, gamma1, mu1, sig1, fac1 ,w0_2, gamma2, mu2, sig2, fac2,w0_3, gamma3, mu3, sig3, fac3, offset):
+    return faltung(x, w0_1, gamma1, mu1, sig1, fac1, offset)+faltung(x,w0_2, gamma2, mu2, sig2, fac2, offset )+faltung(x,w0_3, gamma3, mu3, sig3, fac3, offset )
+
 def gauss_sum2( x, mu1, sig1, fac1 , mu2, sig2, fac2, offset):
     return gaussian(x, mu1, sig1, fac1)+gaussian(x, mu2, sig2, fac2)+offset
 
@@ -142,12 +145,32 @@ for i in np.arange(len(option_abstand)):
     #if i == 1:
     #    param = [2.7, 0.3, 2.8, 0.2, 0.4,   3.0, 0.3, 3.2, 0.1, 0.1,   0.2]
     #else:
-    param = [2.7, 0.4, 2.8, 0.2, 0.4,   3.0, 0.3, 3.2, 0.1, 0.1,   0.2]
+    """
+      if i == 1:
+          param = [2.7, 0.4, 2.8, 0.2, 0.4, 3.0, 0.3, 3.2, 0.1, 0.1, 2.5, 0.3, 2.7, 0.1, 0.1, 0.2]
+          parameters, covariance_matrix = curve_fit(falt_sum2, w, abs_0[:, i], p0=param)
+          w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, w0_3, gamma3, mu3, sig3, fac3, offset = parameters
+          # print(parameters)
+          func = falt_sum2(w, w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, w0_3, gamma3, mu3, sig3,
+                           fac3, offset)
+          plt.plot(w, func, color='green', label="Funktionssummen-Fit")
+          func1 = faltung(w, w0_1, gamma1, mu1, sig1, fac1, offset)
+          func2 = faltung(w, w0_2, gamma2, mu2, sig2, fac2, offset)
+          func3 = faltung(w, w0_3, gamma3, mu3, sig3, fac3, offset)
+          fwhm_c1 = FWHM(w, func1, abs_0[:, i])
+          fwhm_c2 = FWHM(w, func2, abs_0[:, i])
+          fwhm[:, i] = np.transpose(np.array([fwhm_c1[0], fwhm_c1[1], fwhm_c2[0], fwhm_c1[1]]))
+          plt.plot(w, func1, ls='--', color='green', label='Einzelprofile')
+          plt.plot(w, func2, ls='--', color='green')
+          plt.plot(w, func3, ls='--', color='green')
+          plt.axis([w[-1], w[0], 0, 1])
+    """
+    param = [2.7, 0.4, 2.8, 0.2, 0.4, 3.0, 0.3, 3.2, 0.1, 0.1, 0.2]
     parameters, covariance_matrix = curve_fit(falt_sum, w, abs_0[:,i], p0=param)
     w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset = parameters
     #print(parameters)
     func = falt_sum(w, w0_1, gamma1, mu1, sig1, fac1, w0_2, gamma2, mu2, sig2, fac2, offset)
-    plt.plot(w, func, color='green', label="Voigt-Summen-Fit")
+    plt.plot(w, func, color='green', label="Funktionssummen-Fit")
     func1 = faltung(w, w0_1, gamma1, mu1, sig1, fac1, offset)
     func2 = faltung(w, w0_2, gamma2, mu2, sig2, fac2, offset)
     fwhm_c1 = FWHM(w, func1, abs_0[:,i])
@@ -160,10 +183,6 @@ for i in np.arange(len(option_abstand)):
     tau[i, 2] = 1 / (fwhm_c2[0] * 10 ** (15))
     tau[i, 1] = fwhm_c1[1] * 10 ** (15) / (fwhm_c1[0] * 10 ** (15)) ** 2
     tau[i, 3] = fwhm_c2[1] * 10 ** (15) / (fwhm_c2[0] * 10 ** (15)) ** 2
-    #print('Abstand \SI{' + option_abstand[i] + '}{\ nano\metre} & ' + str(tau[0,0]*10**(15))
-    #      +' & ' + str(tau[0,1]*10**(15)) + ' & '
-    #      + str(tau[1,0] *10**(15))
-    #      + '  & ' + str(tau[1,1] *10**(15)) + ' \ \ ')
     plt.plot(w, func1, ls='--', color='green', label='Einzelprofile')
     plt.plot(w, func2, ls='--', color='green')
     plt.axis([w[-1], w[0], 0, 1])
@@ -233,7 +252,7 @@ plt.figure(2, dpi=130, figsize=(10,6.666))
 
 plt.subplot(1,2,1)
 for j in np.arange(len(abs_0[1,:])-1,-1,-1):
-    plt.plot(w, abs_0[:,j] , label = ''+str(option_abstand[j])+' nm Abstand', color=(0.1+0.1*j, 0.2+0.1*j, 0.5+0.1*j))#(0.1, 0.2, 0.5) blau
+    plt.plot(w, abs_0[:,j] , label = ''+str(option_abstand[j])+' nm Abstand', color=(0.1+0.15*j, 0.2+0.125*j, 0.5+0.1*j))#(0.1, 0.2, 0.5) blau
 #plt.legend(loc='upper right')
 plt.title('Signale bei 0° Polarisation')
 plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
@@ -242,7 +261,7 @@ plt.ylabel('Extinktionsspektrum')
 
 plt.subplot(1,2,2)
 for j in np.arange(len(abs_90[1,:])-1,-1,-1):
-    plt.plot(w, abs_90[:,j] , label = ''+str(option_abstand[j])+' nm Abstand', color=(0.1+0.1*j, 0.2+0.1*j, 0.5+0.1*j))#(0.1, 0.2, 0.5) blau
+    plt.plot(w, abs_90[:,j] , label = ''+str(option_abstand[j])+' nm Abstand', color=(0.1+0.15*j, 0.2+0.125*j, 0.5+0.1*j))#(0.1, 0.2, 0.5) blau
 plt.legend(loc='upper right')
 plt.title('Signale bei 90° Polarisation')
 plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
@@ -254,6 +273,35 @@ plt.yticks([])
 
 
 plt.savefig('alle_hybridplasmonen')
+
+np.disp(fwhm)
+
+tau_einzel_100 = np.array([3.00910398e-15, 2.93874409e-17], dtype=float)
+tau_einzel_70 = np.array([2.36180287e-15, 7.88382187e-18], dtype=float)
+
+w_einzel_100 = np.array([3.46668524e-01, 3.74133761e-03], dtype=float)
+w_einzel_70 = np.array([3.82536912e-01, 2.53808766e-03], dtype=float)
+
+plt.figure(3, dpi = 130, figsize=(10,6.666))
+#plt.subplot(1,2, 1)
+plt.errorbar(np.array(option_abstand, dtype=int), tau[:,0]*10**(15), tau[:,1]*10**(15), marker='.', color='blue', ls='', label='Hybrid-Partikel 100nm Peak')
+plt.errorbar(np.array(option_abstand, dtype=int), tau[:,2]*10**(15), tau[:,3]*10**(15), marker='.', color='red', ls='', label='Hybrid-Partikel 70nm Peak')
+plt.plot(np.array([20, 60], dtype=int), np.array([tau_einzel_100[0], tau_einzel_100[0]], dtype=float)*10**(15), ls='--', color='blue', label='Einzelpartikel 100nm')
+plt.plot(np.array([20, 60], dtype=int), np.array([tau_einzel_70[0], tau_einzel_70[0]], dtype=float)*10**(15), ls='--', color='red',label='Einzelpartikel 70nm')
+plt.ylabel('Lebenszeiten $ τ $ in fs')
+plt.xlabel('Abstände der Partikel zueinander in nm')
+plt.axis([15, 65, 1.1, 4.4])
+plt.legend(loc='upper left')
+
+#plt.subplot(1,2,2)
+#plt.errorbar(np.array(option_abstand, dtype=int), fwhm[0,:], fwhm[1,:], marker='.', color='blue', ls='', label='Hybrid-Partikel 100nm Peak' )
+#plt.errorbar(np.array(option_abstand, dtype=int), fwhm[2,:], fwhm[3,:], marker='.', color='red', ls='', label='Hybrid-Partikel 100nm Peak' )
+#plt.plot(np.array([20, 60], dtype=int), np.array([w_einzel_100[0], w_einzel_100[0]], dtype=float), ls='--', color='blue', label='Einzelpartikel 100nm')
+#plt.plot(np.array([20, 60], dtype=int), np.array([w_einzel_70[0], w_einzel_70[0]], dtype=float), ls='--', color='red',label='Einzelpartikel 70nm')
+#plt.ylabel('$\omega\cdot$ $10^{15}$ in 1/s')
+#plt.xlabel('Abstände der Partikel zueinander in nm')
+#plt.legend()
+plt.savefig('lebenszeiten_abstands_plot')
 
 plt.show()
 

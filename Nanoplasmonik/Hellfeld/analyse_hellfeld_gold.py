@@ -1,4 +1,3 @@
-import matplotlib.pyplot
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
@@ -153,6 +152,7 @@ for i in np.arange(len(groesse)):
     w0, gamma, mu, sig, fac , offset= parameters
     func = faltung(w, w0, gamma, mu, sig, fac, offset)
     fwhm = FWHM(w,func, abs_90)
+    print(groesse[i]+': '+str(fwhm))
     plt.plot(w, func, color='orange',
              label="Lorentz-Gauss-Fit 90°")
     plt.plot(w[[int(fwhm[2]), int(fwhm[3])]], func[[int(fwhm[2]), int(fwhm[3])]], lw=1, ls='--',
