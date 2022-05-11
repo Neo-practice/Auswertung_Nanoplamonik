@@ -101,64 +101,109 @@ wavelength, intensity_70 = np.hsplit(einzel_70, 2)
 
 einzel_100 = np.loadtxt('spectrometer_dunkelfeld_100nm_einzel_at_650.00nm_cut_at_1436.50Y_01.dat', skiprows = 6)
 wavelength, intensity_100 = np.hsplit(einzel_100, 2)
+'''
+correction_100 = (16.503/49.086)
+correction_70 = (16.503/24.962)
+
+plt.figure(9)
+plt.plot(w,ref*correction_70)
+plt.plot(w,ref*correction_100)
+plt.plot(w,intensity_100)
+plt.plot(w,intensity_70)
+
+abs_100 = intensity_100/ref
+abs_70 = intensity_70/ref
+
+plt.figure(10)
+plt.plot(w, abs_100)
+plt.plot(w, abs_70)
+'''
+
 
 maximal_val = np.max(intensity_100)
 
 intensity_100=intensity_100/maximal_val
 intensity_70=intensity_70/maximal_val
-ref=ref/maximal_val
-
-plt.figure(1, dpi=130, figsize=(10,6.666))
-plt.plot(w, ref, label='Weißlichtquelle')
-plt.plot(w,intensity_70, label='Dunkelfeldspektrum 70 nm Silberpartikel')
-plt.plot(w,intensity_100, label='Dunkelfeldspektrum 100 nm Silberpartikel')
-plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
-plt.ylabel('Intensität des Spektrums')
-plt.legend()
 
 
-plt.figure(2)
-#abs_70 = -(intensity_70-ref)
-abs_70 = 1-intensity_70/ref
-plt.plot(w, abs_70, color='blue', label='Größe: 70 nm')
-#plt.axis([w[-1], w[0], 0, 1])
-plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
-plt.title('Extinktionsspektrum für 70 nm Nanopartikel')
 
-plt.figure(3)
-abs_100 = ref/intensity_100
-#abs_70 = 1-intensity_70/ref
-plt.plot(w, abs_100, color='blue', label='Größe: 70 nm')
-#plt.axis([w[-1], w[0], 0, 1])
-plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
-plt.title('Extinktionsspektrum für 100 nm Nanopartikel')
 
+
+
+abs_100 = intensity_100
+abs_70 = intensity_70
+
+
+fwhm_val = np.zeros((2,2), dtype=float)
 
 w = np.squeeze(w)
 abs_70 = np.squeeze(abs_70)
+abs_100 = np.squeeze(abs_100)
 
 ## Lorentz*Gauss Fit
-'''
-    parameters, covariance_matrix = curve_fit(faltung, w, abs_0, p0=[ 3.0, 0.4, 3.3, 0.5, 0.3, 0.1 ])
-    std_parameters = np.sqrt(np.diag(covariance_matrix))
-    w0, gamma, mu, sig, fac, offset = parameters
-    func = faltung(w, w0, gamma, mu, sig, fac, offset)
-    fwhm = FWHM(w,func, abs_0)
-    fwhm_val[0,i] = fwhm[0]
-    fwhm_val[1, i] = fwhm[1]
-    plt.plot(w, func, color='green',
+
+plt.figure(1, dpi=130, figsize=(10,6.666))
+plt.subplot(1,2,2)
+#abs_70 = -(intensity_70-ref)
+
+plt.plot(w, abs_70, color='blue', label='Größe: 70 nm')
+plt.axis([w[-1], w[0], -0.1, 1.1])
+plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
+plt.title('Dunkelfeldspektrum für 70 nm Nanopartikel')
+
+parameters, covariance_matrix = curve_fit(faltung, w, abs_70, p0=[ 3.0, 0.4, 3.3, 0.5, 0.3, 0.1 ])
+std_parameters = np.sqrt(np.diag(covariance_matrix))
+w0, gamma, mu, sig, fac, offset = parameters
+func = faltung(w, w0, gamma, mu, sig, fac, offset)
+fwhm = FWHM(w,func, abs_70)
+tau = 1/fwhm[0]
+s_tau = fwhm[1]/(fwhm[0])**2
+print("w_70 = "+ str(fwhm[0])+"\pm"+str(fwhm[1])+"\ntau_70 = "+str(tau)+"\pm"+str(s_tau))
+
+plt.plot(w, func, color='green',
              label="Lorentz-Gauss-Fit")
-    plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  lw=1 ,ls='--',
+plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  lw=1 ,ls='--',
               color='green',
-              label="$\Delta\omega$ = "+str(round(fwhm[0]*1000)/1000)+"$\pm$ "+str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$")
-    plt.legend(loc='upper right')
-
-    if i == 0:
-        plt.ylabel('Extinktionsspektrum')
-    else:
-        plt.yticks([])
+              label="$\Delta\omega$ = "+str(np.round(fwhm[0]*1000)/1000)+"$\pm$ "
+                    +str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$\n"
+                                                   "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
+plt.plot(w, ref, label='Weißlichtquelle', color='black')
+plt.legend(loc='upper right')
 
 
+plt.subplot(1,2,1)
+plt.plot(w, abs_100, color='blue', label='Größe: 100 nm')
+plt.axis([w[-1], w[0], -0.1, 1.1])
+plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
+plt.title('Dunkelfeldspektrum für 100 nm Nanopartikel')
+
+
+parameters, covariance_matrix = curve_fit(faltung, w, abs_100, p0=[ 3.0, 0.4, 3.3, 0.5, 0.3, 0.1 ])
+std_parameters = np.sqrt(np.diag(covariance_matrix))
+w0, gamma, mu, sig, fac, offset = parameters
+func = faltung(w, w0, gamma, mu, sig, fac, offset)
+fwhm = FWHM(w,func, abs_100)
+#fwhm_val[0,i] = fwhm[0]
+#fwhm_val[1, i] = fwhm[1]
+tau = 1/fwhm[0]
+s_tau = fwhm[1]/(fwhm[0])**2
+print("w_100 = "+ str(fwhm[0])+"\pm"+str(fwhm[1])+"\ntau_100 = "+str(tau)+"\pm"+str(s_tau))
+
+plt.plot(w, func, color='green',
+             label="Lorentz-Gauss-Fit")
+plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  lw=1 ,ls='--',
+              color='green',
+              label="$\Delta\omega$ = "+str(np.round(fwhm[0]*1000)/1000)+"$\pm$ "
+                    +str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$\n"
+                                                   "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
+plt.plot(w, ref, label='Weißlichtquelle', color='black')
+plt.legend(loc='upper right')
+
+if i == 0:
+    plt.ylabel('Intensität')
+#else:
+    #plt.yticks([])
+'''
 tau = np.zeros((2,2))
 
 tau[0,0] = 1/(fwhm_val[0,0]*10**(15))
