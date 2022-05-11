@@ -141,13 +141,14 @@ abs_70 = np.squeeze(abs_70)
 abs_100 = np.squeeze(abs_100)
 
 ## Lorentz*Gauss Fit
-
+i=2
 plt.figure(1, dpi=130, figsize=(10,6.666))
 plt.subplot(1,2,2)
 #abs_70 = -(intensity_70-ref)
 
 plt.plot(w, abs_70, color='blue', label='Größe: 70 nm')
 plt.axis([w[-1], w[0], -0.1, 1.1])
+plt.yticks([])
 plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
 plt.title('Dunkelfeldspektrum für 70 nm Nanopartikel')
 
@@ -169,7 +170,6 @@ plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  
                                                    "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
 plt.plot(w, ref, label='Weißlichtquelle', color='black')
 plt.legend(loc='upper right')
-
 
 plt.subplot(1,2,1)
 plt.plot(w, abs_100, color='blue', label='Größe: 100 nm')
@@ -197,12 +197,9 @@ plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  
                     +str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$\n"
                                                    "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
 plt.plot(w, ref, label='Weißlichtquelle', color='black')
-plt.legend(loc='upper right')
+plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1.))
+plt.ylabel('Intensität')
 
-if i == 0:
-    plt.ylabel('Intensität')
-#else:
-    #plt.yticks([])
 '''
 tau = np.zeros((2,2))
 
@@ -218,7 +215,7 @@ print(tau)
 
 
 
-
-#plt.savefig('Einzelpartikelplamonen')
 '''
+plt.savefig('dunkelfeldspektren_gold')
+
 plt.show()
