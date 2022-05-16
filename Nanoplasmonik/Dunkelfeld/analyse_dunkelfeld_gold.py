@@ -41,7 +41,7 @@ def FWHM( x, y , orig): # Gibt Float-Array zurück [ fwhm, fwhm_fehler, index li
     ID[1] = list(y).index(half_values[1])
     #### berechne Unsicherheit
     ## berechne jede Abweichung in w-Richtung und Intensitätsrichtung (zweiteres müsste noch)
-    bereich=400     #Bereich um halbes Maximum
+    bereich=700     #Bereich um halbes Maximum
     abweichung_links = np.zeros(2*bereich)
     abweichung_rechts = np.zeros(2*bereich)
     abweichung_oben = np.zeros(2 * bereich) ## Abweichung Modell zur Peak-Hoehe
@@ -125,6 +125,7 @@ maximal_val = np.max(intensity_100)
 intensity_100=intensity_100/maximal_val
 intensity_70=intensity_70/maximal_val
 
+ref =  ref/maximal_val
 
 
 
@@ -145,8 +146,8 @@ i=2
 plt.figure(1, dpi=130, figsize=(10,6.666))
 plt.subplot(1,2,2)
 #abs_70 = -(intensity_70-ref)
-
-plt.plot(w, abs_70, color='blue', label='Größe: 70 nm')
+plt.plot(w, ref, label='Weißlichtquelle', color='grey')
+plt.plot(w, abs_70, color='blue', label='Signal')
 plt.axis([w[-1], w[0], -0.1, 1.1])
 plt.yticks([])
 plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
@@ -168,11 +169,11 @@ plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  
               label="$\Delta\omega$ = "+str(np.round(fwhm[0]*1000)/1000)+"$\pm$ "
                     +str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$\n"
                                                    "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
-plt.plot(w, ref, label='Weißlichtquelle', color='black')
 plt.legend(loc='upper right')
 
 plt.subplot(1,2,1)
-plt.plot(w, abs_100, color='blue', label='Größe: 100 nm')
+plt.plot(w, ref, label='Weißlichtquelle', color='grey')
+plt.plot(w, abs_100, color='blue', label='Signal')
 plt.axis([w[-1], w[0], -0.1, 1.1])
 plt.xlabel('$\omega \cdot 10^{15}$ s$^{-1}$')
 plt.title('Dunkelfeldspektrum für 100 nm Nanopartikel')
@@ -196,7 +197,6 @@ plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  
               label="$\Delta\omega$ = "+str(np.round(fwhm[0]*1000)/1000)+"$\pm$ "
                     +str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$\n"
                                                    "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
-plt.plot(w, ref, label='Weißlichtquelle', color='black')
 plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1.))
 plt.ylabel('Intensität')
 
@@ -218,4 +218,32 @@ print(tau)
 '''
 plt.savefig('dunkelfeldspektren_gold')
 
+
+fluoreszenz_0 = np.loadtxt("/Users/mariuskaiser/Desktop/PPD/Auswertung_PPD/Nanoplasmonik/Hellfeld/einzel_fluoreszenzspektrum_70.dat")
+w_0, intensity_0 = np.hsplit(np.transpose(fluoreszenz_0), 2)
+print(intensity_0)
+
+plt.figure(100)
+#plt.plot(w_0,intensity_0)
+abs = np.array(intensity_70/intensity_0, dtype = float)
+plt.plot(w, abs)
+'''
+parameters, covariance_matrix = curve_fit(faltung, w, abs, p0=[ 3.0, 0.4, 3.3, 0.5, 0.3, 0.1 ])
+std_parameters = np.sqrt(np.diag(covariance_matrix))
+w0, gamma, mu, sig, fac, offset = parameters
+func = faltung(w, w0, gamma, mu, sig, fac, offset)
+fwhm = FWHM(w,func, abs_100)
+#fwhm_val[0,i] = fwhm[0]
+#fwhm_val[1, i] = fwhm[1]
+tau = 1/fwhm[0]
+s_tau = fwhm[1]/(fwhm[0])**2
+plt.plot(w, func, color='green',
+             label="Lorentz-Gauss-Fit")
+plt.plot( w[[int(fwhm[2]),int(fwhm[3])]] , func[[int(fwhm[2]),int(fwhm[3])]] ,  lw=1 ,ls='--',
+              color='green',
+              label="$\Delta\omega$ = "+str(np.round(fwhm[0]*1000)/1000)+"$\pm$ "
+                    +str(round(fwhm[1]*1000)/1000)+" $\cdot 10^{15}$ s$^{-1}$\n"
+                                                   "τ = "+str(np.round(tau*100)/100)+"$\pm$"+str(np.round(s_tau*100)/100)+" fs")
+plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1.))
+'''
 plt.show()

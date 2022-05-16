@@ -115,6 +115,9 @@ for i in np.arange(len(groesse)):
     abs_0 = 1-intensity_0/ref_0
     abs_90 = 1-intensity_90/ref_90
 
+    save_arr = np.array([w.reshape(len(w)), abs_0.reshape(len(abs_0))])
+    np.savetxt("einzel_fluoreszenzspektrum_"+groesse[i]+".dat", save_arr)
+
     plt.subplot(1, 2, i+1)
     plt.plot(w, abs_0, color='blue', label='0° Polarisation')
     plt.axis([w[-1], w[0], 0, 1])
