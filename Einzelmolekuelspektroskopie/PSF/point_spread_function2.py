@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import curve_fit
+import glob, os
 
 def lorentz( x, w0, gamma, d):
     return 1/( (x**2 - w0**2 )**2 + gamma**2*w0**2)+d
@@ -26,40 +27,15 @@ def FWHM(x, y):
     left_id = np.argmin(diff[0:fullmax_id])
     right_id = np.argmin(diff[fullmax_id:])+ fullmax_id - 1
     fwhm = x[right_id]-x[left_id]
-    delta_fwhm = 0 # könnte noch ausgerechnet werden...
-    return fwhm, delta_fwhm, left_id, right_id
+    return fwhm, left_id, right_id
 
 
+# os.chdir("PSF"), uses current folder
+# for filename in glob.glob("*.csv"):
+    # print(filename)
 
 filename = "5.csv"
 data = pd.read_csv(filename, skiprows=1, names=["x", "y"])
-
-# xaxis = np.arange(0, np.max(data.x), 0.05)
-# w0, gamma, mu, sig, fac, offset
-# param = [22.0, 10.0, 22.0, 100000.0, 100000000.0, 820.0]
-# parameters, covariance_matrix = curve_fit(faltung, data.x, data.y, p0=param)
-# w0, gamma, mu, sig, fac, offset = parameters
-# plt.plot(xaxis, faltung(xaxis, w0, gamma, mu, sig, fac, offset), label="Fit Voigt-Funktion")
-
-# SINGLE GAUSSIAN #################################################################
-# mu, sig, fac, d
-# param = [23.0, 1.0, 1.0, 820.0]
-# parameters, covariance_matrix = curve_fit(gaussian1, data.x, data.y, p0=param)
-# w0, sig, fac, d = param
-# plt.plot(xaxis, gaussian1(xaxis, w0, sig, fac, d), color="purple")
-
-
-# SINGLE LORENTZ ##################################################################
-# w0, gamma, d, fac
-# param = [22.0, 10.0, 700.0, 100000000.0]
-# xaxis = np.arange(-100, 100, 0.05)
-# parameters, covariance_matrix = curve_fit(lorentz1, data.x, data.y, p0=param)
-# w0, gamma, d, fac = parameters
-# plt.plot(xaxis, lorentz1(xaxis, w0, gamma, d, fac), color="green")
-# plt.plot(xaxis, lorentz1(xaxis, w0, gamma, d, fac), color="green")
-
-
-
 
 zoom = 47
 pixelsize = 6.45 * 10**(-6)
@@ -69,6 +45,16 @@ param = [22.0, 10.0, 22.0, 100000.0, 100000000.0, 820.0]
 parameters, covariance_matrix = curve_fit(faltung, data.x, data.y, p0=param)
 w0, gamma, mu, sig, fac, offset = parameters
 
+
+def error_fwhm(par, cov, func, x):
+    greater_par = []
+    lower_par = []
+    for i in range(len(par)):
+        greater_par += [par[i] + np.sqrt(cov[i][i])]
+        lower_par += [par[i] - np.sqrt(cov[i][i])]
+    greater_fwhm = FWHM(x, func(x, *greater_par))
+    lower_fwhm = FWHM(x, func(x, *lower_par))
+    return np.abs((greater_fwhm[0]-lower_fwhm[0])/2)
 
 # Plot auf Abstand geeicht
 xaxis = (data.x-w0) * pixelsize / zoom
@@ -82,7 +68,12 @@ fitaxis = np.arange(np.min(xaxis), np.max(xaxis), 0.0000000005)
 fitplot = faltung(xaxis_inverse(fitaxis), w0, gamma, mu, sig, fac, offset)
 
 # calculating FWHM
-fwhm, fwhm_fehler, index_links, index_rechts = FWHM(fitaxis, faltung(xaxis_inverse(fitaxis), w0, gamma, mu, sig, fac, offset))
+fwhm, index_links, index_rechts = FWHM(fitaxis, faltung(xaxis_inverse(fitaxis), *parameters))
+error = error_fwhm(parameters, covariance_matrix, faltung, fitaxis)
+
+
+
+
 
 # Plotting
 plt.plot(fitaxis[index_links], fitplot[index_links], marker="+", color="red")
