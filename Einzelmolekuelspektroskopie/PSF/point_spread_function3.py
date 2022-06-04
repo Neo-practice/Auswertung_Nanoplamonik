@@ -41,7 +41,7 @@ def error_fwhm(par, cov, func, x):
 
 
 zoom = 47
-pixelsize = 6.45 * 10**(-6)
+pixelsize = 6.45 * 10**(-6) # m
 
 def xaxis_inverse(xaxis):
     data = xaxis * zoom /pixelsize + w0
@@ -113,7 +113,7 @@ for i in range(1, 16, 1):
     plt.plot(fitaxis[index_rechts], fitplot[index_rechts]/a, marker="+", color="black")
     plt.legend()
     plt.ylabel("Normierte Intensität")
-    plt.xlabel("Abstand")
+    plt.xlabel("Aufweitung in m")
     # plt.show()
     file = "test/" + str(i) + ".png"
     plt.savefig(file)

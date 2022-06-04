@@ -29,6 +29,7 @@ peak3 = []
 # 3 Peaks
 for filename in glob.glob("3peaks/*.csv"):
     data = pd.read_csv(filename, delimiter=",", skiprows=1, names=["pixel", "spec"])
+    wavelength = 0.51289659*data.pixel + 423.58859879
     data = data.fillna(method="ffill")
     pixel = data.pixel
     spec = data.spec
