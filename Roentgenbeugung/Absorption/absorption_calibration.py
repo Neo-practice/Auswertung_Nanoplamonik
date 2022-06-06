@@ -70,10 +70,6 @@ df = pd.DataFrame(data=d)
 df.to_csv('data/wolfram_transitions_in_angstroem.txt', header=None, index=None, sep=' ')
 
 
-
-
-
-
 #plt.plot(data1.angle, data1.value)
 # plt.plot(data1.angle, data1.untg, label="untergrund")
 #plt.show()
@@ -85,16 +81,13 @@ thet = data1.angle.to_numpy() * (2*np.pi/360)
 lamb = a / np.sqrt(2) * np.sin(thet) # in Angström
 
 
-
-
-
-plt.plot(lamb, data1.value)
+#plt.plot(lamb, data1.value)
 #plt.show()
 
 peaks_data = np.array([0.9931, 1.0280, 1.0646, 1.1870, 1.2115, 1.2466, 1.4435,
-              2.0235, 2.0922, 2.1683, 2.4646, 2.5035, 2.5424])
+              2.0235, 2.0922, 2.1683, 2.4646, 2.5035, 2.5424])*10**(-10)
 peaks_theo = np.array([1.06186, 1.06796, 1.09862, 1.2626, 1.24445, 1.28187,
-              1.476424, 2.123, 2.136, 2.197, 2.488, 2.526, 2.561])
+              1.476424, 2.123, 2.136, 2.197, 2.488, 2.526, 2.561])*10**(-10)
 peaks_trans= [r"$L_\gamma_3$", r"$L_\gamma_2$", r"$L_\gamma_1$", r"$L_\beta_3$",
               r"$L_\beta_2$", r"$L_\beta_1$", r"$L_\alpha_1$", r"$L_\gamma_3*",
               r"$L_\gamma_2*", r"$L_\gamma_1*", r"$L_\beta_3*", r"$L_\beta_2*",
@@ -102,7 +95,10 @@ peaks_trans= [r"$L_\gamma_3$", r"$L_\gamma_2$", r"$L_\gamma_1$", r"$L_\beta_3$",
 
 def f(x, m, b):
     return m*x+b
+
 (m, b), covariance_matrix = curve_fit(f, xdata=peaks_data, ydata=peaks_theo, p0=[1.0, 1.0])
+# m = 0.9876039005116924
+# b = 6.371626387990272e-12
 
 plt.plot(peaks_data, peaks_theo, marker="+", linestyle='None', label="Peaks von Wolfram")
 plt.plot(peaks_data, f(peaks_data, m, b), label="Fitgerade")
@@ -119,13 +115,8 @@ def to_wavelength(x):
     thet = x.to_numpy() * (2 * np.pi / 360)
     lamb = a / np.sqrt(2) * np.sin(thet)
     return lamb*m+b
-print(b)
 
-new_lambda = to_wavelength(data1.angle)
-#print(new_lambda)
-
-plt.plot(new_lambda, data1.value, label="data")
+plt.plot(to_wavelength(data1.angle), data1.value, label="data")
+plt.savefig("plots/calibration_data.png")
 plt.show()
-
-
-#plt.show()
+plt.close(("all"))
