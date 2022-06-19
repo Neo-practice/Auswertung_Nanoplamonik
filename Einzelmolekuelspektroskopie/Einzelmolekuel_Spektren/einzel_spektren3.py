@@ -63,8 +63,8 @@ for filename in glob.glob("3peaks/*.csv"):
     plt.plot(wavelength, spec/a, label="Messdaten", color="#969696")
     plt.plot(wavelength, fit/a, label="Summe aller Fits", color="black")
     plt.plot(wavelength, fit1/a, label=r"Gauss-Fit an Peak 0* $\to$ 0", color="red", linestyle="--")
-    plt.plot(wavelength, fit2/a, label=r"Gauss-Fit an Peak 0* $\to$ 0", color="green", linestyle="--")
-    plt.plot(wavelength, fit3/a, label=r"Gauss-Fit an Peak 0* $\to$ 0", color="blue", linestyle="--")
+    plt.plot(wavelength, fit2/a, label=r"Gauss-Fit an Peak 0* $\to$ 1", color="green", linestyle="--")
+    plt.plot(wavelength, fit3/a, label=r"Gauss-Fit an Peak 0* $\to$ 2", color="blue", linestyle="--")
     # plt.plot(wavelength, fit / a, label="Summe aller Fits", color="black")
 
     plt.ylabel('Intensität')
@@ -105,10 +105,10 @@ for filename in glob.glob("2peaks/*.csv"):
 
     a = np.max(spec)
 
-    plt.plot(wavelength, spec/a, label="Messdaten")
-    plt.plot(wavelength, fit/a, label="Summe der Fits")
-    plt.plot(wavelength, fit1/a, label="Gauss-Fit 1")
-    plt.plot(wavelength, fit2/a, label="Gauss-Fit 2")
+    plt.plot(wavelength, spec / a, label="Messdaten", color="#969696")
+    plt.plot(wavelength, fit / a, label="Summe aller Fits", color="black")
+    plt.plot(wavelength, fit1 / a, label=r"Gauss-Fit an Peak 0* $\to$ 0", color="red", linestyle="--")
+    plt.plot(wavelength, fit2 / a, label=r"Gauss-Fit an Peak 0* $\to$ 1", color="green", linestyle="--")
 
 
     plt.ylabel('Intensity')

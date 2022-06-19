@@ -41,7 +41,7 @@ def error_fwhm(par, cov, func, x):
 
 
 zoom = 47
-pixelsize = 6.45 * 10**(-6) # m
+pixelsize = 6.45 * 10**(-6)  # m
 
 def xaxis_inverse(xaxis):
     data = xaxis * zoom /pixelsize + w0
