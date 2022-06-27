@@ -39,7 +39,7 @@ for filename in glob.glob("3peaks/*.csv"):
     data = data.fillna(method="ffill")
     pixel = data.pixel
     spec = data.spec
-
+#
     spec = spec-np.mean(spec[0:150])
 
     # a1, mu1, sig1, a2, mu2, sig2, a3, mu3, sig3
@@ -121,26 +121,49 @@ for filename in glob.glob("2peaks/*.csv"):
     plt.close("all")
 
 
-uebergang1 = (np.mean(peak1+peak1_2))*10**(-6) # in cm
-uebergang2 = (np.mean(peak2+peak2_2))*10**(-6) # in cm
-uebergang3 = (np.mean(peak3))*10**(-6) # in cm
+peak1cm = (np.mean(peak1+peak1_2))*10**(-6) # in cm
+peak2cm = (np.mean(peak2+peak2_2))*10**(-6) # in cm
+peak3cm = (np.mean(peak3))*10**(-6) # in cm
+uebergang1=peak1cm
+uebergang2=peak2cm
+uebergang3=peak3cm
+
+
+peak1nm = (np.mean(peak1+peak1_2)) # in nm
+peak2nm = (np.mean(peak2+peak2_2)) # in nm
+peak3nm = (np.mean(peak3)) # in nm
 
 
 
+# Energiedifferenz der Übergänge
+delta1 = (1/peak1nm-1/peak2nm) * 1/1.000272 * 10**7 # von nm in cm-1
+delta2 = (1/peak2nm-1/peak3nm) * 1/1.000272 * 10**7
+fehler1 = np.sqrt(
+        (1/(peak2nm*peak2nm) * 1/1.000272 * 10**7 * 4)**2 +
+        (1/(peak1nm*peak1nm) * 1/1.000272 * 10**7 * 3)**2
+        )
+fehler2 = np.sqrt(
+        (1/(peak2nm*peak2nm) * 1/1.000272 * 10**7 * 4)**2 +
+        (1/(peak3nm*peak3nm) * 1/1.000272 * 10**7 * 6)**2
+        )
+
+print("------------Berechnete Fehler (nm)--------------")
 print("Übergang nach 0:", 1/uebergang1, " cm-1, ", np.mean(peak1+peak1_2), " nm")
 print("Fehler: ", 1/(uebergang1 - np.mean(peak1_er+peak1_2_er)*10**(-6))-1/uebergang1, " cm-1", np.mean(peak1_er+peak1_2_er), " nm")
 print("Übergang nach 1:", 1/uebergang2, " cm-1, ", np.mean(peak2+peak2_2), " nm")
 print("Fehler: ", 1/(uebergang2-np.mean(peak2_er+peak2_2_er)*10**(-6))-1/uebergang2, " cm-1", np.mean(peak2_er+peak2_2_er), " nm")
 print("Übergang nach 2:", 1/uebergang3, " cm-1, ", np.mean(peak3), " nm")
 print("Fehler: ", 1/(uebergang3-np.mean(peak3_er)*10**(-6))-1/uebergang3, " cm-1", np.mean(peak3_er), " nm")
-print("-----------------------")
+print("----------Selbstgewählte Fehler (nm)------------")
 print("Übergang nach 0:", 1/uebergang1, " cm-1, ", np.mean(peak1+peak1_2), " nm")
 print("Fehler: ", 1/(uebergang1 -3*10**(-6))-1/uebergang1, " cm-1", np.mean(peak1_er+peak1_2_er), " nm")
 print("Übergang nach 1:", 1/uebergang2, " cm-1, ", np.mean(peak2+peak2_2), " nm")
 print("Fehler: ", 1/(uebergang2-4*10**(-6))-1/uebergang2, " cm-1", np.mean(peak2_er+peak2_2_er), " nm")
 print("Übergang nach 2:", 1/uebergang3, " cm-1, ", np.mean(peak3), " nm")
 print("Fehler: ", 1/(uebergang3-6*10**(-6))-1/uebergang3, " cm-1", np.mean(peak3_er), " nm")
-
+print("--------Energie mit selbstgew. Fehlern-----------")
+print("E_12 = ", delta1, " +/- ", fehler1)
+print("E_23 = ", delta2, " +/- ", fehler2)
 
 bin_range = (530, 650)
 bin_num = 20
@@ -173,6 +196,6 @@ plt.legend()
 plt.savefig("plots/histogramm_ensemble.png")
 # plt.show()
 
+print("-----------------Peaks-Infos---------------------")
 print("Anzahl gemeinsame Peaks: ", len(peak1+peak1_2))
-print("Anzahl Peaks 1 und 2:    ", len(peak1))
-print(len(peak3))
+print("Anzahl mit Peak 3:       ", len(peak1))
