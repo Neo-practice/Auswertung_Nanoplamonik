@@ -1,0 +1,194 @@
+data_I
+_chemical_formula_sum                    'C6 H12 O6'
+_symmetry_cell_setting                   orthorhombic
+_symmetry_space_group_name_H-M           'P 21 21 21'
+_symmetry_space_group_name_Hall          'P 2xab;2ybc;2zac'
+_symmetry_Int_Tables_number              19
+
+loop_
+ _space_group_symop_id
+ _space_group_symop_operation_xyz
+ 1   x,y,z
+ 2   -x+1/2,-y,z+1/2
+ 3   -x,y+1/2,-z+1/2
+ 4   x+1/2,-y+1/2,-z
+
+_cell_length_a                           10.4252(10)
+_cell_length_b                           14.9142(19)
+_cell_length_c                           5.0105(3)
+_cell_angle_alpha                        90
+_cell_angle_beta                         90
+_cell_angle_gamma                        90
+_cell_volume                             779.05(13)
+
+
+_cell_formula_units_Z                    4
+
+loop_
+ _atom_type_symbol
+ _atom_type_scat_dispersion_real
+ _atom_type_scat_dispersion_imag
+ _atom_type_scat_source
+ _atom_type_scat_Cromer_Mann_a1
+ _atom_type_scat_Cromer_Mann_b1
+ _atom_type_scat_Cromer_Mann_a2
+ _atom_type_scat_Cromer_Mann_b2
+ _atom_type_scat_Cromer_Mann_a3
+ _atom_type_scat_Cromer_Mann_b3
+ _atom_type_scat_Cromer_Mann_a4
+ _atom_type_scat_Cromer_Mann_b4
+ _atom_type_scat_Cromer_Mann_c
+ C    0.0191  0.0095
+ 'International Tables Vol C tables 4.2.6.8 and 6.1.1.4'
+2.31 20.843901 1.02 10.2075 1.5886 0.5687 0.865 51.651199 0.2156
+ H    0.0000  0.0000
+ 'International Tables Vol C tables 4.2.6.8 and 6.1.1.4'
+0.493002 10.5109 0.322912 26.1257 0.140191 3.14236 0.04081 57.799702 0.003038
+ O    0.0516  0.0335
+ 'International Tables Vol C tables 4.2.6.8 and 6.1.1.4'
+3.0485 13.2771 2.2868 5.7011 1.5463 0.3239 0.867 32.908901 0.2508
+
+loop_
+ _atom_site_label
+ _atom_site_type_symbol
+ _atom_site_fract_x
+ _atom_site_fract_y
+ _atom_site_fract_z
+ _atom_site_adp_type
+ _atom_site_U_iso_or_equiv
+ _atom_site_site_symmetry_multiplicity
+ _atom_site_occupancy
+ _atom_site_calc_flag
+ _atom_site_refinement_flags
+ _atom_site_disorder_assembly
+ _atom_site_disorder_group
+  C1 C 0.351692 0.608084 -0.08186 Uiso 0.017 4 1 d . . .
+  C2 C 0.423602 0.68136 0.066824 Uiso 0.017 4 1 d . . .
+  C3 C 0.567145 0.665349 0.042566 Uiso 0.017 4 1 d . . .
+  C4 C 0.597125 0.5684 0.112532 Uiso 0.017 4 1 d . . .
+  C5 C 0.495892 0.507487 -0.009026 Uiso 0.017 4 1 d . . .
+  C6 C 0.506655 0.414472 0.112842 Uiso 0.017 4 1 d . . .
+  O1 O 0.337258 0.600266 -0.364765 Uiso 0.0434 4 1 d . . .
+  O2 O 0.385465 0.761738 -0.067037 Uiso 0.0434 4 1 d . . .
+  O3 O 0.636006 0.733536 0.183118 Uiso 0.0434 4 1 d . . .
+  O4 O 0.727969 0.540314 0.094565 Uiso 0.0434 4 1 d . . .
+  O5 O 0.35983 0.517542 0.010536 Uiso 0.0434 4 1 d . . .
+  O6 O 0.461953 0.339975 -0.040858 Uiso 0.0434 4 1 d . . .
+  H1 H 0.2327 0.6124 -0.0154 Uiso 0.05 4 1 d . . .
+  H2 H 0.3958 0.6776 0.2599 Uiso 0.05 4 1 d . . .
+  H3 H 0.5888 0.6543 -0.1995 Uiso 0.05 4 1 d . . .
+  H4 H 0.5677 0.5565 0.3385 Uiso 0.05 4 1 d . . .
+  H5 H 0.5136 0.4865 -0.2312 Uiso 0.05 4 1 d . . .
+  H6 H 0.6172 0.3792 0.1032 Uiso 0.05 4 1 d . . .
+  H7 H 0.4804 0.3947 0.3116 Uiso 0.05 4 1 d . . .
+  H8 H 0.2753 0.5674 -0.4299 Uiso 0.05 4 1 d . . .
+  H9 H 0.4485 0.7776 -0.2031 Uiso 0.05 4 1 d . . .
+  H10 H 0.7247 0.7137 0.1178 Uiso 0.05 4 1 d . . .
+  H11 H 0.7517 0.5082 0.2326 Uiso 0.05 4 1 d . . .
+  H12 H 0.4127 0.2861 0.0699 Uiso 0.05 4 1 d . . .
+
+loop_
+ _atom_site_aniso_label
+ _atom_site_aniso_type_symbol
+ _atom_site_aniso_U_11
+ _atom_site_aniso_U_22
+ _atom_site_aniso_U_33
+ _atom_site_aniso_U_12
+ _atom_site_aniso_U_13
+ _atom_site_aniso_U_23
+ ? ? ? ? ? ? ? ?
+
+loop_
+ _jana_atom_site_ADP_C_label
+ _jana_atom_site_ADP_C_type_symbol
+ _jana_atom_site_ADP_C_111
+ _jana_atom_site_ADP_C_112
+ _jana_atom_site_ADP_C_113
+ _jana_atom_site_ADP_C_122
+ _jana_atom_site_ADP_C_123
+ _jana_atom_site_ADP_C_133
+ _jana_atom_site_ADP_C_222
+ _jana_atom_site_ADP_C_223
+ _jana_atom_site_ADP_C_233
+ _jana_atom_site_ADP_C_333
+ ? ? ? ? ? ? ? ? ? ? ? ?
+
+loop_
+ _jana_atom_site_ADP_D_label
+ _jana_atom_site_ADP_D_type_symbol
+ _jana_atom_site_ADP_D_1111
+ _jana_atom_site_ADP_D_1112
+ _jana_atom_site_ADP_D_1113
+ _jana_atom_site_ADP_D_1122
+ _jana_atom_site_ADP_D_1123
+ _jana_atom_site_ADP_D_1133
+ _jana_atom_site_ADP_D_1222
+ _jana_atom_site_ADP_D_1223
+ _jana_atom_site_ADP_D_1233
+ _jana_atom_site_ADP_D_1333
+ _jana_atom_site_ADP_D_2222
+ _jana_atom_site_ADP_D_2223
+ _jana_atom_site_ADP_D_2233
+ _jana_atom_site_ADP_D_2333
+ _jana_atom_site_ADP_D_3333
+ ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
+
+loop_
+ _jana_atom_site_ADP_E_label
+ _jana_atom_site_ADP_E_type_symbol
+ _jana_atom_site_ADP_E_11111
+ _jana_atom_site_ADP_E_11112
+ _jana_atom_site_ADP_E_11113
+ _jana_atom_site_ADP_E_11122
+ _jana_atom_site_ADP_E_11123
+ _jana_atom_site_ADP_E_11133
+ _jana_atom_site_ADP_E_11222
+ _jana_atom_site_ADP_E_11223
+ _jana_atom_site_ADP_E_11233
+ _jana_atom_site_ADP_E_11333
+ _jana_atom_site_ADP_E_12222
+ _jana_atom_site_ADP_E_12223
+ _jana_atom_site_ADP_E_12233
+ _jana_atom_site_ADP_E_12333
+ _jana_atom_site_ADP_E_13333
+ _jana_atom_site_ADP_E_22222
+ _jana_atom_site_ADP_E_22223
+ _jana_atom_site_ADP_E_22233
+ _jana_atom_site_ADP_E_22333
+ _jana_atom_site_ADP_E_23333
+ _jana_atom_site_ADP_E_33333
+ ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
+
+loop_
+ _jana_atom_site_ADP_F_label
+ _jana_atom_site_ADP_F_type_symbol
+ _jana_atom_site_ADP_F_111111
+ _jana_atom_site_ADP_F_111112
+ _jana_atom_site_ADP_F_111113
+ _jana_atom_site_ADP_F_111122
+ _jana_atom_site_ADP_F_111123
+ _jana_atom_site_ADP_F_111133
+ _jana_atom_site_ADP_F_111222
+ _jana_atom_site_ADP_F_111223
+ _jana_atom_site_ADP_F_111233
+ _jana_atom_site_ADP_F_111333
+ _jana_atom_site_ADP_F_112222
+ _jana_atom_site_ADP_F_112223
+ _jana_atom_site_ADP_F_112233
+ _jana_atom_site_ADP_F_112333
+ _jana_atom_site_ADP_F_113333
+ _jana_atom_site_ADP_F_122222
+ _jana_atom_site_ADP_F_122223
+ _jana_atom_site_ADP_F_122233
+ _jana_atom_site_ADP_F_122333
+ _jana_atom_site_ADP_F_123333
+ _jana_atom_site_ADP_F_133333
+ _jana_atom_site_ADP_F_222222
+ _jana_atom_site_ADP_F_222223
+ _jana_atom_site_ADP_F_222233
+ _jana_atom_site_ADP_F_222333
+ _jana_atom_site_ADP_F_223333
+ _jana_atom_site_ADP_F_233333
+ _jana_atom_site_ADP_F_333333
+ ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
+

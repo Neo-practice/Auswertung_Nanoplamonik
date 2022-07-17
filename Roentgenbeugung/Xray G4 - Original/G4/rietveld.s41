@@ -1,0 +1,35 @@
+bckgtype 1 bckgnum 12 manbckg 0 useinvx 0 wtlebail 1 uklebail 0 asymm 3 usehs 1
+skipfrto 1.644 9.672
+skipfrto 104.509 120.681
+proffun 3 strain 0 cutoff 8
+skipfrdl 0
+end
+*******************************************************************************
+# Shift parameters - zero, sycos, sysin
+ 0.000000-12.51068 0.000000                                 000
+# Background parameters
+ 1867.696-1673.783 660.2983 800.5846-1049.550 436.4032      111111
+ 797.2363-201.3502-253.7744-519.2250-347.5581 725.3628      111111
+# Asymmetry parameters
+ 0.025000 0.023558                                          00
+# Cell parameters - a,b,c,alpha,beta,gamma
+ 10.42558 14.91445 5.010478 90.00000 90.00000 90.00000      111000
+# Gaussian parameters - U,V,W,P
+ 229.9282 0.130617 2.330862 0.000000                        0000
+# Lorentzian parameters - LX,LXe,LY,LYe
+ 8.515435 0.000000 1.790880 0.000000                        0000
+----------------------------   s.u. block   -----------------------------------
+# Shift parameters - zero, sycos, sysin
+ 0.000000 0.000000 0.000000
+# Background parameters
+ 9.923697 17.45250 18.96487 24.48456 27.26879 30.39485
+ 33.60013 34.60346 36.71589 38.04127 39.82224 39.07603
+# Asymmetry parameters
+ 0.000000 0.000000
+# Cell parameters - a,b,c,alpha,beta,gamma
+ 0.001028 0.002005 0.000301 0.000000 0.000000 0.000000
+# Gaussian parameters - U,V,W,P
+ 0.000000 0.000000 0.000000 0.000000
+# Lorentzian parameters - LX,LXe,LY,LYe
+ 0.000000 0.000000 0.000000 0.000000
+-------------------------------------------------------------------------------

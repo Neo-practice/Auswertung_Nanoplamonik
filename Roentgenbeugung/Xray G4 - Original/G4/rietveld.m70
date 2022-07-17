@@ -1,0 +1,57 @@
+
+#=======================================================================
+# Refine
+#=======================================================================
+
+_exptl_crystal_F_000                     384
+_refine_ls_weighting_scheme              sigma
+_refine_ls_number_constraints            10
+_refine_ls_number_restraints             16
+_refine_ls_R_factor_gt                   0.2230
+_refine_ls_wR_factor_gt                  0.2492
+_refine_ls_R_factor_all                  0.2714
+_refine_ls_wR_factor_all                 0.2528
+_refine_ls_wR_factor_ref                 0.2528
+_pd_proc_ls_prof_R_factor                0.1427
+_pd_proc_ls_prof_wR_factor               0.1902
+_pd_proc_ls_prof_wR_expected             0.0185
+_refine_ls_number_parameters             54
+_refine_ls_goodness_of_fit_all           10.28
+_refine_ls_goodness_of_fit_ref           10.28
+_refine_ls_shift/su_max                  0.0430
+_refine_ls_shift/su_mean                 0.0142
+
+loop_
+ _restr_distance_atom_site_label_1
+ _restr_distance_site_symmetry_1
+ _restr_distance_atom_site_label_2
+ _restr_distance_site_symmetry_2
+ _restr_distance_target
+ _restr_distance_target_weight_param
+C1 . C2 . 1.52 0.001
+C2 . C3 . 1.52 0.001
+C3 . C4 . 1.52 0.001
+C4 . C5 . 1.52 0.001
+C5 . C6 . 1.52 0.001
+C1 . O1 . 1.43 0.001
+C2 . O2 . 1.43 0.001
+C3 . O3 . 1.43 0.001
+C4 . O4 . 1.43 0.001
+C5 . O5 . 1.43 0.001
+C1 . O5 . 1.43 0.001
+C6 . O6 . 1.43 0.001
+
+loop_
+ _restr_angle_atom_site_label_1
+ _restr_angle_site_symmetry_1
+ _restr_angle_atom_site_label_2
+ _restr_angle_site_symmetry_2
+ _restr_angle_atom_site_label_3
+ _restr_angle_site_symmetry_3
+ _restr_angle_target
+ _restr_angle_target_weight_param
+C1 . C2 . C3 . 109.47 0.01
+C2 . C3 . C4 . 109.47 0.01
+C3 . C4 . C5 . 109.47 0.01
+C4 . C5 . C6 . 109.47 0.01
+
